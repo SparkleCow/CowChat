@@ -33,3 +33,35 @@ app-user-list {
   color: #777;
 }
 
+@media screen and (max-width: 1200px) {
+  app-user-list{
+    flex: 2;
+  }
+
+  .chat-page-container{
+    display: flex;
+    flex: 3;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  app-user-list{
+    flex: 3;
+  }
+
+  .chat-page-container{
+    display: flex;
+    flex: 2;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  app-user-list{
+    flex: 4;
+  }
+
+  .chat-page-container{
+    display: flex;
+    flex: 1;
+  }
+}

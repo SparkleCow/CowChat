@@ -8,7 +8,7 @@
           alt="Foto de perfil"
           class="profile-img"
         >
-        <h1>Bienvenido {{ loggedUser!.username }}</h1>
+        <h1>Bienvenido {{ loggedUser.username ? loggedUser.username : ""}}</h1>
       </div>
       <input type="text" placeholder="Buscar usuario...">
     </div>
@@ -19,13 +19,13 @@
       <div class="user-card" (click)="openChat(user)">
         <div class="user-img">
           <img
-            [src]="user.presignedUrl ? user.presignedUrl : 'https://st2.depositphotos.com/9447932/47520/v/450/depositphotos_475203180-stock-illustration-cow-vector-illustration-flat-style.jpg'"
+            [src]="user?.presignedUrl ? user.presignedUrl : 'https://st2.depositphotos.com/9447932/47520/v/450/depositphotos_475203180-stock-illustration-cow-vector-illustration-flat-style.jpg'"
             alt="User Image">
         </div>
 
         <section class="user-info">
-          <h3>{{ user.username }}</h3>
-          <p>{{ user.isOnline ? 'En línea' : 'Desconectado' }}</p>
+          <h3>{{ user?.username ? user.username  : ""}}</h3>
+          <p>{{ user?.isOnline ? 'En línea' : 'Desconectado' }}</p>
         </section>
 
         <section class="user-meta">
