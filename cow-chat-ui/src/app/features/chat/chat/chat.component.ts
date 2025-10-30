@@ -43,9 +43,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatOpened = event.urlAfterRedirects.includes('/chat/page');
     });
 
-    this.chatSocketService.connect(() => {
-      console.log("WebSocket listo para suscripciones de chat.");
-    });
+    this.chatSocketService.connect(() => {});
 
     this.userService.loadAllUsers();
 

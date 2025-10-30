@@ -45,7 +45,7 @@ export class UserInformationComponent {
       this.isLoading = true;
       this.userService.uploadUserImage(this.selectedFile).subscribe({
         next: (res) => {
-          console.log('✅ Imagen subida:', res);
+          console.log('Imagen subida:', res);
           this.isLoading = false;
           alert('Imagen cargada correctamente.');
         },

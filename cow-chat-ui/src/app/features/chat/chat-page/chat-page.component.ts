@@ -65,7 +65,6 @@ export class ChatPageComponent implements OnInit, OnDestroy{
           }
 
           this.currentChatSubscription = this.chatSocketService.subscribeToChat(this.chat.id, (message) => {
-            console.log("📨 Mensaje recibido en chat actual:", message);
             if (this.chat && this.chat.id === message.chatId) {
               this.chat.messages.push(message);
             }
@@ -94,7 +93,6 @@ export class ChatPageComponent implements OnInit, OnDestroy{
   }
 
   sendMessage(): void {
-    console.log("holaaaaaaaaaaa", this.chat)
     if (!this.newMessage || !this.chat) return;
 
     const dto: MessageRequestDto = {

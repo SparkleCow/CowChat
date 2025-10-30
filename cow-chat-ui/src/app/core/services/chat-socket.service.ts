@@ -15,7 +15,6 @@ export class ChatSocketService {
 
   connect(onConnected?: () => void): void {
     if (this.stompClient?.connected) {
-      console.log("Already connected, skipping new connection");
       onConnected?.();
       return;
     }
@@ -23,17 +22,15 @@ export class ChatSocketService {
     this.stompClient = new Client({
       webSocketFactory: () => new SockJS(`${this.url}/ws`),
       reconnectDelay: 5000,
-      debug: (str) => console.log(str)
     });
 
     this.stompClient.onConnect = (frame: Frame) => {
-      console.log('✅ WebSocket connected:', frame);
       this.connected = true;
       onConnected?.();
     };
 
     this.stompClient.onStompError = (frame: Frame) => {
-      console.error('❌ Broker error:', frame.headers['message']);
+      console.error('Broker error:', frame.headers['message']);
       console.error('Details:', frame.body);
     };
 
@@ -44,18 +41,17 @@ export class ChatSocketService {
     if (this.stompClient && this.connected) {
       this.stompClient.deactivate();
       this.connected = false;
-      console.log('🔌 WebSocket disconnected');
+      console.log('WebSocket disconnected');
     }
   }
 
   sendMessage(chatId: string, payload: any): void {
     if (!this.connected || !this.stompClient) {
-      console.warn('⚠️ Not connected to WebSocket');
+      console.warn('Not connected to WebSocket');
       return;
     }
 
     const destination = `/app/chat/${chatId}/send`;
-    console.log(`📤 Enviando mensaje a ${destination}`, payload);
 
     this.stompClient.publish({
       destination,
@@ -65,16 +61,14 @@ export class ChatSocketService {
 
   subscribeToChat(chatId: string, onMessage: (msg: MessageResponseDto) => void) {
     if (!this.connected || !this.stompClient) {
-      console.warn("❌ WebSocket no conectado aún");
+      console.warn("WebSocket no conectado aún");
       return;
     }
 
     const topic = `/topic/chat/${chatId}`;
-    console.log(`🧠 Subscrito a ${topic}`);
 
     const subscription = this.stompClient.subscribe(topic, (msg: IMessage) => {
       const message = JSON.parse(msg.body) as MessageResponseDto;
-      console.log("📨 Mensaje recibido en chat:", message);
       onMessage(message);
     });
 
