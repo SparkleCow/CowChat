@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserListComponent } from "../user-list/user-list.component";
 import { UserService } from '../../../core/services/user.service';
-import { ChatService } from '../../../core/services/chat.service';
 import { ChatSocketService } from '../../../core/services/chat-socket.service';
 import { UserResponseDto } from '../../../models/user-response-dto';
 import { ChatResponseDto } from '../../../models/chat-response-dto';
@@ -33,7 +32,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private chatService: ChatService,
     private chatSocketService: ChatSocketService,
     private router: Router
   ) {}
@@ -41,7 +39,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.checkScreenSize();
 
-    // Detectar ruta: si entras al chat, marcar chatOpened=true
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((event: any) => {
       this.chatOpened = event.urlAfterRedirects.includes('/chat/page');
     });
@@ -67,7 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize')
   checkScreenSize() {
-    this.isMobile = window.innerWidth <= 900;
+    this.isMobile = window.innerWidth <= 600;
   }
 
   ngOnDestroy(): void {

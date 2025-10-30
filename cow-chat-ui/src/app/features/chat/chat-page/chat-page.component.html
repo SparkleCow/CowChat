@@ -1,11 +1,15 @@
  <div class="chat-container">
       <header class="chat-header">
+        <button class="back-button" (click)="redirectAtGeneralChat()">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
         <div class="chat-img">
           <img
-            src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0"
+            [src]="receiverUser?.presignedUrl ? receiverUser?.presignedUrl : 'https://st2.depositphotos.com/9447932/47520/v/450/depositphotos_475203180-stock-illustration-cow-vector-illustration-flat-style.jpg'"
             alt="contact">
         </div>
-        <h1>{{ chat.name }}</h1>
+        <h1>{{ receiverUser?.username }}</h1>
       </header>
 
       <div class="messages">
@@ -16,7 +20,12 @@
               'sent': msg.senderId === currentUserId,
               'received': msg.senderId !== currentUserId
             }">
-            <p>{{ msg.content }}</p>
+
+            <p class="message-text">{{ msg.content }}</p>
+            <span class="message-time">
+              {{ msg.timestamp | date:'d MMM, HH:mm' }}
+            </span>
+
           </div>
         </ng-container>
       </div>

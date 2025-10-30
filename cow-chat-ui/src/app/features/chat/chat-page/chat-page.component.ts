@@ -7,6 +7,8 @@ import { ChatService } from '../../../core/services/chat.service';
 import { ChatSocketService } from '../../../core/services/chat-socket.service';
 import { MessageRequestDto, MessageType } from '../../../models/message-request-dto';
 import { Subscription } from 'rxjs';
+import { UserResponseDto } from '../../../models/user-response-dto';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat-page',
@@ -17,11 +19,14 @@ import { Subscription } from 'rxjs';
 export class ChatPageComponent implements OnInit, OnDestroy{
 
   chat!: ChatResponseDto;
+  chatName: string = "";
 
-  newMessage: string = '';
+  newMessage: string = "";
 
-  receiverUserId!: string;
-  currentUserId: string = '';
+  receiverUserId: string | null = null;
+  currentUserId: string = "";
+
+  receiverUser!: UserResponseDto | null;
 
   currentChatSubscription: any = null;
 
@@ -32,6 +37,7 @@ export class ChatPageComponent implements OnInit, OnDestroy{
       private userService: UserService,
       private chatService: ChatService,
       private chatSocketService: ChatSocketService,
+      private router:Router
   ){}
 
   ngOnInit(): void {
@@ -49,6 +55,10 @@ export class ChatPageComponent implements OnInit, OnDestroy{
         if (chat && (!this.chat || this.chat.id !== chat.id)) {
 
           this.chat = chat;
+          this.receiverUserId = this.chat.participantsId.find(id => id !== this.currentUserId) || null;
+          if(this.receiverUserId!=null){
+            this.receiverUser = this.userService.getUserByIdFromCache(this.receiverUserId);
+          }
 
           if (this.currentChatSubscription) {
             this.currentChatSubscription.unsubscribe();
@@ -98,5 +108,9 @@ export class ChatPageComponent implements OnInit, OnDestroy{
 
     this.chatSocketService.sendMessage(this.chat.id, dto);
     this.newMessage = '';
+  }
+
+  redirectAtGeneralChat(){
+    this.router.navigate(["chat"]);
   }
 }

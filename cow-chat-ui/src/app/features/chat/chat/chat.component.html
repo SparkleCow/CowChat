@@ -1,10 +1,12 @@
 <div class="chat-page">
   <app-user-list
+    *ngIf="!isMobile || (isMobile && !chatOpened)"
     [loggedUser]="user">
   </app-user-list>
 
-  <div class="chat-page-container">
+  <div
+    class="chat-page-container"
+    *ngIf="!isMobile || (isMobile && chatOpened)">
     <router-outlet></router-outlet>
   </div>
-
 </div>

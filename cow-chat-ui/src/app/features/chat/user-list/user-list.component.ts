@@ -10,7 +10,7 @@ import { UserService } from '../../../core/services/user.service';
 })
 export class UserListComponent implements OnInit{
 
-  @Input() loggedUser!: UserResponseDto;
+  @Input() loggedUser: UserResponseDto | null = null;
 
   users: UserResponseDto[] = [];
 

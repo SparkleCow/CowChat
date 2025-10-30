@@ -50,6 +50,10 @@ export class UserService {
     return this.users$;
   }
 
+  getUserByIdFromCache(userId: string): UserResponseDto | null {
+    const users = this.usersSubject.value;
+    return users.find(u => u.id === userId) || null;
+  }
 
   findUserLogged(): void {
     this.http.get<UserResponseDto>(`${this.url}/user/self`).subscribe({
