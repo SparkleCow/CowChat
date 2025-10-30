@@ -128,3 +128,28 @@ header input {
   object-fit: cover;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.status-dot.online {
+  background-color: #4caf50;
+  box-shadow: 0 0 2px #4caf50;
+}
+
+.status-dot.offline {
+  background-color: #9c27b0;
+  opacity: 0.7;
+}

@@ -29,12 +29,12 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, token);
   }
 
-  saveUserId(userId: string): void{
-    localStorage.setItem("userId", userId)
-  }
-
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  saveUserId(userId: string): void{
+    localStorage.setItem("userId", userId)
   }
 
   getUserId(): string | null {

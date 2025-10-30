@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit{
      this.authService.$login(this.form.value).subscribe({
       next: (response: AuthResponseDto) => {
         this.authService.saveToken(response.jwt);
+        this.authService.saveUserId(response.userId)
         this.userService.findUserLogged();
         alert("Logueado con éxito");
         this.redirectAtChat();

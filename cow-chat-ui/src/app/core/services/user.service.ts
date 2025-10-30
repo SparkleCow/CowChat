@@ -43,6 +43,17 @@ export class UserService {
       });
   }
 
+  updateUserPresence(userId: string, online: boolean): void {
+    const currentUsers = this.usersSubject.value;
+    console.log(currentUsers)
+    const updatedUsers = currentUsers.map(user =>
+      user.id === userId ? { ...user, isOnline: online } : user
+    );
+
+    this.usersSubject.next(updatedUsers);
+    console.log(this.usersSubject.value)
+  }
+
   /**
    * Returns users observable
   */

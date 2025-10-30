@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -32,6 +33,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
+    private authService: AuthService,
     private chatSocketService: ChatSocketService,
     private router: Router
   ) {}
@@ -43,13 +45,25 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.chatOpened = event.urlAfterRedirects.includes('/chat/page');
     });
 
-    this.chatSocketService.connect(() => {});
-
     this.userService.loadAllUsers();
 
     this.userSub = this.userService.users$.subscribe({
-      next: (users) => this.users = users
+      next: (users) => this.users = users,
     });
+
+    this.chatSocketService.connect(() => {
+      //Loggued user ID
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.chatSocketService.sendPresence(userId, true);
+      }
+
+      this.chatSocketService.subscribeToPresence((data) => {
+        console.log(`Usuario ${data.userId} está ${data.online ? 'online' : 'offline'}`);
+        this.userService.updateUserPresence(data.userId, data.online);
+      });
+    });
+
 
     this.userService.user$.subscribe({
       next: (user) => {
@@ -58,6 +72,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.userService.findUserLogged();
+
+    window.addEventListener('beforeunload', () => {
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.chatSocketService.sendPresence(userId, false);
+      }
+    });
   }
 
   @HostListener('window:resize')

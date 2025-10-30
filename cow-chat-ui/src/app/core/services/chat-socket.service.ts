@@ -74,4 +74,28 @@ export class ChatSocketService {
 
     return subscription;
   }
+
+  sendPresence(userId: string, online: boolean): void {
+    if (!this.connected || !this.stompClient) return;
+
+    this.stompClient.publish({
+      destination: `/app/presence`,
+      body: JSON.stringify({ userId, online })
+    });
+  }
+
+  subscribeToPresence(onPresenceChange: (data: { userId: string; online: boolean }) => void) {
+    if (!this.connected || !this.stompClient) {
+      console.warn("WebSocket no conectado aún");
+      return;
+    }
+
+    const subscription = this.stompClient.subscribe('/topic/presence', (msg: IMessage) => {
+      const data = JSON.parse(msg.body);
+      onPresenceChange(data);
+    });
+
+    return subscription;
+  }
+
 }

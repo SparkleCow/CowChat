@@ -29,8 +29,12 @@
         </section>
 
         <section class="user-meta">
-          <p>10:30</p>
-        </section>
+          <span
+            class="status-dot"
+            [ngClass]="user.isOnline ? 'online' : 'offline'"
+            title="{{ user.isOnline ? 'En línea' : 'Desconectado' }}">
+          </span>
+</section>
       </div>
     } @empty {
       <p>No hay usuarios registrados.</p>

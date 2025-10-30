@@ -1,12 +1,14 @@
 package com.sparklecow.cowchat.chat;
 
+import com.sparklecow.cowchat.message.Message;
 import com.sparklecow.cowchat.message.MessageMapper;
 import com.sparklecow.cowchat.message.MessageResponseDto;
+import com.sparklecow.cowchat.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +23,16 @@ public class ChatMapper {
 
         List<String> participantIds = chat.getParticipants() != null
                 ? chat.getParticipants().stream()
-                .map(user -> user.getId())
-                .collect(Collectors.toList())
+                .map(User::getId)
+                .toList()
                 : List.of();
+
 
         List<MessageResponseDto> messageDtos = chat.getMessages() != null
                 ? chat.getMessages().stream()
+                .sorted(Comparator.comparing(Message::getTimestamp))
                 .map(messageMapper::toDto)
-                .collect(Collectors.toList())
+                .toList()
                 : List.of();
 
         return new ChatResponseDto(

@@ -16,7 +16,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ChatMapper chatMapper;
 
-    public ChatResponseDto existOrcreateChat(String senderId, String recipientId){
+    public ChatResponseDto existOrCreateChat(String senderId, String recipientId){
         Optional<Chat> existingChat = chatRepository.findChatBetweenUsers(senderId, recipientId);
 
         if (existingChat.isPresent()) {

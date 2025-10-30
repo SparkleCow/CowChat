@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatResponseDto } from '../../../models/chat-response-dto';
 import { UserService } from '../../../core/services/user.service';
@@ -8,7 +8,7 @@ import { ChatSocketService } from '../../../core/services/chat-socket.service';
 import { MessageRequestDto, MessageType } from '../../../models/message-request-dto';
 import { Subscription } from 'rxjs';
 import { UserResponseDto } from '../../../models/user-response-dto';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat-page',
@@ -16,10 +16,11 @@ import { Route, Router } from '@angular/router';
   templateUrl: './chat-page.component.html',
   styleUrl: './chat-page.component.css'
 })
-export class ChatPageComponent implements OnInit, OnDestroy{
+export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked{
+
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   chat!: ChatResponseDto;
-  chatName: string = "";
 
   newMessage: string = "";
 
@@ -39,6 +40,17 @@ export class ChatPageComponent implements OnInit, OnDestroy{
       private chatSocketService: ChatSocketService,
       private router:Router
   ){}
+
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
 
   ngOnInit(): void {
 
@@ -69,6 +81,7 @@ export class ChatPageComponent implements OnInit, OnDestroy{
               this.chat.messages.push(message);
             }
           });
+          console.log(this.chat)
         }
       }
     });
