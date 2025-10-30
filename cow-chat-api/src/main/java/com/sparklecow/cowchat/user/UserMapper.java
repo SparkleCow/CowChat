@@ -30,8 +30,7 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 user.getImagePath(),
-                user.getLastSeen(),
-                user.isUserOnline(),
+                user.getIsOnline() != null ? user.getIsOnline() : false,
                 s3Service.generatePresignedDownloadUrl(
                         user.getImagePath(), Duration.ofMinutes(15)
                 )

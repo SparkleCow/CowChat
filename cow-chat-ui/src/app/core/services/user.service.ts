@@ -45,13 +45,11 @@ export class UserService {
 
   updateUserPresence(userId: string, online: boolean): void {
     const currentUsers = this.usersSubject.value;
-    console.log(currentUsers)
     const updatedUsers = currentUsers.map(user =>
       user.id === userId ? { ...user, isOnline: online } : user
     );
 
     this.usersSubject.next(updatedUsers);
-    console.log(this.usersSubject.value)
   }
 
   /**
@@ -68,7 +66,8 @@ export class UserService {
 
   findUserLogged(): void {
     this.http.get<UserResponseDto>(`${this.url}/user/self`).subscribe({
-      next: (user) => this.userSubject.next(user),
+      next: (user) => {this.userSubject.next(user)
+      },
       error: (err) => {
         console.error('Error al obtener usuario logueado:', err);
         this.userSubject.next(null);

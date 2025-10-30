@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.List;
 @Table(name = "users")
 @NamedQuery(
         name = "User.findAllExcept",
-        query = "SELECT u FROM User u WHERE u.id <> :userId ORDER BY u.lastSeen DESC"
+        query = "SELECT u FROM User u WHERE u.id <> :userId"
 )
 public class User extends BaseAuditing implements UserDetails {
 
@@ -46,7 +45,7 @@ public class User extends BaseAuditing implements UserDetails {
 
     private String imagePath;
 
-    private LocalDateTime lastSeen;
+    private Boolean isOnline = false;
 
     @ManyToMany(mappedBy = "participants")
     private List<Chat> chats = new ArrayList<>();
@@ -82,11 +81,6 @@ public class User extends BaseAuditing implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
-    }
-
-    @Transient
-    public boolean isUserOnline(){
-        return lastSeen != null && !lastSeen.isBefore(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
     }
 
     @Override

@@ -3,7 +3,6 @@ export interface UserResponseDto{
   username: string;
   email: string;
   imagePath: string;
-  lastSeen: string;
   isOnline: boolean;
   presignedUrl: string;
 }
