@@ -81,7 +81,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked{
               this.chat.messages.push(message);
             }
           });
-          console.log(this.chat)
         }
       }
     });

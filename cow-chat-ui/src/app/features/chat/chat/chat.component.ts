@@ -25,11 +25,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   chat!: ChatResponseDto;
   newMessage: string = '';
   user!: UserResponseDto;
-
-  private userSub?: Subscription;
-
   isMobile = false;
   chatOpened = false;
+  informationPanelOpened = false;
+
+
+  private userSub?: Subscription;
 
   constructor(
     private userService: UserService,
@@ -39,47 +40,51 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.checkScreenSize();
+  this.checkScreenSize();
 
-    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((event: any) => {
+  this.chatOpened = this.router.url.includes('/chat/page');
+  this.informationPanelOpened = this.router.url.includes('/chat/information')
+
+  this.router.events
+    .pipe(filter(e => e instanceof NavigationEnd))
+    .subscribe((event: any) => {
       this.chatOpened = event.urlAfterRedirects.includes('/chat/page');
+      this.informationPanelOpened = event.urlAfterRedirects.includes('/chat/information');
     });
 
-    this.userService.loadAllUsers();
+  this.userService.loadAllUsers();
 
-    this.userSub = this.userService.users$.subscribe({
-      next: (users) => this.users = users,
+  this.userSub = this.userService.users$.subscribe({
+    next: (users) => (this.users = users),
+  });
+
+  this.chatSocketService.connect(() => {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.chatSocketService.sendPresence(userId, true);
+    }
+
+    this.chatSocketService.subscribeToPresence((data) => {
+      console.log(`Usuario ${data.userId} está ${data.online ? 'online' : 'offline'}`);
+      this.userService.updateUserPresence(data.userId, data.online);
     });
+  });
 
-    this.chatSocketService.connect(() => {
-      //Loggued user ID
-      const userId = this.authService.getUserId();
-      if (userId) {
-        this.chatSocketService.sendPresence(userId, true);
-      }
+  this.userService.user$.subscribe({
+    next: (user) => {
+      if (user) this.user = user;
+    },
+  });
 
-      this.chatSocketService.subscribeToPresence((data) => {
-        console.log(`Usuario ${data.userId} está ${data.online ? 'online' : 'offline'}`);
-        this.userService.updateUserPresence(data.userId, data.online);
-      });
-    });
+  this.userService.findUserLogged();
 
-
-    this.userService.user$.subscribe({
-      next: (user) => {
-        if (user) this.user = user;
-      }
-    });
-
-    this.userService.findUserLogged();
-
-    window.addEventListener('beforeunload', () => {
-      const userId = this.authService.getUserId();
-      if (userId) {
-        this.chatSocketService.sendPresence(userId, false);
-      }
-    });
-  }
+  window.addEventListener('beforeunload', () => {
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.chatSocketService.sendPresence(userId, false);
+    }
+  });
+}
 
   @HostListener('window:resize')
   checkScreenSize() {
