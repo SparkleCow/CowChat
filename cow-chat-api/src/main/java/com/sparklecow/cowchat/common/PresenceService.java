@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*This service works saving the actual user state for use it later since our websocket service.
+* It will save the current state in a map*/
 @Service
 public class PresenceService {
 
