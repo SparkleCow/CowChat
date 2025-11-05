@@ -6,6 +6,12 @@
   align-items: center;
 }
 
+header{
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
 .settings-container {
   display: flex;
   flex-direction: column;
@@ -84,7 +90,7 @@ form input:focus {
   box-shadow: 0 0 0 2px rgba(124, 59, 237, 0.2);
 }
 
-button {
+.button {
   background-color: #7c3bed;
   color: white;
   border: none;
@@ -95,11 +101,33 @@ button {
   transition: background 0.2s;
 }
 
-button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
   background-color: #682dd6;
 }
 
-button:disabled {
+.button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+  margin: 0px 20px;
+}
+
+.back-button:hover {
+  color: #7c3bed;
+  transform: scale(1.1);
+}
+
+.back-button i {
+  pointer-events: none;
 }

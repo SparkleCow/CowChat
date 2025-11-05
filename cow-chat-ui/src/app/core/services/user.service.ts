@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserResponseDto } from '../../models/user-response-dto';
+import { AuthResponseDto } from '../../models/auth-response-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -82,8 +83,8 @@ export class UserService {
     return this.http.post(`${this.url}/user/upload`, formData, { responseType: 'text' });
   }
 
-  updateUsername(newUsername: string): Observable<UserResponseDto> {
-    return this.http.put<UserResponseDto>(`${this.url}/user/update-username`, { username: newUsername });
+  updateUsername(newUsername: string): Observable<AuthResponseDto> {
+    return this.http.put<AuthResponseDto>(`${this.url}/user/update`, { username: newUsername });
   }
 
   /**

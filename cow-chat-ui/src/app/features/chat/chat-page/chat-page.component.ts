@@ -20,7 +20,7 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked{
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
-  chat!: ChatResponseDto;
+  chat?: ChatResponseDto;
 
   newMessage: string = "";
 

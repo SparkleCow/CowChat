@@ -65,7 +65,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     this.chatSocketService.subscribeToPresence((data) => {
-      console.log(`Usuario ${data.userId} está ${data.online ? 'online' : 'offline'}`);
       this.userService.updateUserPresence(data.userId, data.online);
     });
   });

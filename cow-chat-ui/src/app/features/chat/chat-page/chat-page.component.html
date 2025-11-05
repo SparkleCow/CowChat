@@ -13,7 +13,7 @@
       </header>
 
       <div class="messages" #messagesContainer>
-        <ng-container *ngFor="let msg of chat.messages">
+        <ng-container *ngFor="let msg of chat?.messages">
           <div
             [ngClass]="{
               'message': true,

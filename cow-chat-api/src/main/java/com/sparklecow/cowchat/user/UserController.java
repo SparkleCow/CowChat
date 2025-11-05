@@ -36,4 +36,11 @@ public class UserController {
         String imagePath = fileService.uploadProfileImageToS3(file, key, (User) authentication.getPrincipal());
         return ResponseEntity.ok(userService.updateProfileImage(authentication, imagePath));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<AuthResponseDto> updateUsername(@RequestBody UserUpdateDto userUpdateDto,
+                                                      Authentication authentication){
+
+        return ResponseEntity.ok(userService.updateUsername(authentication, userUpdateDto));
+    }
 }
