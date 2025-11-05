@@ -1,6 +1,12 @@
 package com.sparklecow.cowchat.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparklecow.cowchat.exception.BusinessErrorCodes;
+import com.sparklecow.cowchat.exception.ExceptionResponse;
 import com.sparklecow.cowchat.user.User;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,12 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
+/**
+ * JWT filter that runs before controllers.
+ * Since this runs before reaching controllers, exceptions here
+ * can not be handled by ControllerAdvice that is why it send
+ * custom JSON error responses directly from the filter.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,9 +37,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String bearerToken = request.getHeader("Authorization");
 
@@ -36,28 +52,63 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = bearerToken.substring(7);
 
-        String username = jwtUtils.extractUsername(token);
+        String username = null;
 
-        if (username == null || username.isBlank()) {
-            filterChain.doFilter(request, response);
+        try {
+            username = jwtUtils.extractUsername(token);
+
+            if (username == null || username.isBlank()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            User user = (User) userDetailsService.loadUserByUsername(username);
+
+            if (!jwtUtils.validateToken(token, user)) {
+                sendErrorResponse(response, BusinessErrorCodes.TOKEN_INVALID, "Token validation failed",
+                        Map.of("token", "Invalid or malformed"));
+                return;
+            }
+
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        } catch (UsernameNotFoundException e) {
+            sendErrorResponse(response, BusinessErrorCodes.USER_NOT_FOUND, "User not found",
+                        Map.of("username", username));
+            return;
+        } catch (ExpiredJwtException e) {
+            sendErrorResponse(response, BusinessErrorCodes.TOKEN_EXPIRED, "JWT expired", Map.of("token", e.getMessage()));
+            return;
+        } catch (MalformedJwtException | SignatureException e) {
+            sendErrorResponse(response, BusinessErrorCodes.TOKEN_INVALID, "JWT signature or format invalid",
+                    Map.of("token", e.getMessage()));
+            return;
+        } catch (Exception e) {
+            log.error("Unexpected JWT filter error: {}", e.getMessage());
+            sendErrorResponse(response, BusinessErrorCodes.INTERNAL_SERVER_ERROR,
+                    "Unexpected JWT processing error", Map.of("details", e.getClass().getSimpleName()));
             return;
         }
 
-        User user = (User) userDetailsService.loadUserByUsername(username);
+        filterChain.doFilter(request, response);
+    }
 
-        if (!jwtUtils.validateToken(token, user)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+    private void sendErrorResponse(HttpServletResponse response, BusinessErrorCodes code, String message,
+                                   Map<String, String> details) throws IOException {
+        response.setStatus(code.getHttpStatus().value());
+        response.setContentType("application/json");
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                user, null, user.getAuthorities()
-        );
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .message(message)
+                .businessErrorCode(code.getErrorCode())
+                .businessErrorDescription(code.getMessage())
+                .errorDetails(details)
+                .build();
 
-        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
-        filterChain.doFilter(request,response);
+        objectMapper.writeValue(response.getWriter(), exceptionResponse);
     }
 }

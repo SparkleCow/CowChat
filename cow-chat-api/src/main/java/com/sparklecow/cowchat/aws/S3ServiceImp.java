@@ -63,7 +63,7 @@ public class S3ServiceImp implements S3Service{
         try(FileOutputStream fos = new FileOutputStream(file)){
             fos.write(responseResponseBytes.asByteArray());
         }catch (IOException exception){
-            throw new IOException("Error al descargar el archivo "+exception.getMessage());
+            throw new IOException("Error downloading file "+exception.getMessage());
         }
     }
 

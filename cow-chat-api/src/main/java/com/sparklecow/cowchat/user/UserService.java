@@ -4,6 +4,7 @@ import com.sparklecow.cowchat.common.PresenceService;
 import com.sparklecow.cowchat.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +24,7 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(""));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username "+username+" not found"));
     }
 
     public List<UserResponseDto> findAllUsers(){

@@ -2,6 +2,7 @@ package com.sparklecow.cowchat.common.file;
 
 import com.sparklecow.cowchat.aws.S3Service;
 import com.sparklecow.cowchat.aws.config.AwsProperties;
+import com.sparklecow.cowchat.exception.FileCompressionException;
 import com.sparklecow.cowchat.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,7 +71,7 @@ public class FileServiceImp implements FileService{
     }
 
     @Override
-    public byte[] compressData(byte[] data) {
+    public byte[] compressData(byte[] data){
         if (data == null || data.length == 0) return data;
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -81,7 +82,7 @@ public class FileServiceImp implements FileService{
             return baos.toByteArray();
 
         } catch (IOException e) {
-            throw new RuntimeException("Error compressing data", e);
+            throw new FileCompressionException("Error compressing data " + e.getMessage());
         }
     }
 
@@ -101,7 +102,7 @@ public class FileServiceImp implements FileService{
             return baos.toByteArray();
 
         } catch (IOException e) {
-            throw new RuntimeException("Error decompressing data", e);
+            throw new FileCompressionException("Error decompressing data "+ e);
         }
     }
 
@@ -119,7 +120,7 @@ public class FileServiceImp implements FileService{
 
         key = user.getUsername() + "/" + key + ".gz";
 
-        if (s3Service.uploadFile(key, finalPath)) {
+        if (Boolean.TRUE.equals(s3Service.uploadFile(key, finalPath))) {
             Files.delete(filePath);
             return "File uploaded successfully (compressed)";
         }

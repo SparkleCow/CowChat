@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,16 +39,5 @@ public class MessageService {
 
         Message saved = messageRepository.save(message);
         return messageMapper.toDto(saved);
-    }
-
-    public Message sendMessageWithoutUserOrChat(String content) {
-        Message message = new Message();
-        message.setMessageType(MessageType.TEXT);
-        message.setId(UUID.randomUUID().toString());
-        message.setChat(null);
-        message.setSender(null);
-        message.setContent(content);
-        message.setTimestamp(LocalDateTime.now());
-        return message;
     }
 }

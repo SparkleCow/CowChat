@@ -26,7 +26,7 @@ public class SecurityConfig {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 return userRepository.findByUsername(username).orElseThrow(
-                        () -> new RuntimeException("User with username "+username+" not found")
+                        () -> new UsernameNotFoundException("User with username "+username+" not found")
                 );
             }
         };
