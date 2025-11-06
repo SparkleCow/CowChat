@@ -69,3 +69,12 @@
   margin:30px;
   font-size: 35px;
 }
+
+.error {
+  color: #ff3b3b;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: left;
+  width: 80%;
+}

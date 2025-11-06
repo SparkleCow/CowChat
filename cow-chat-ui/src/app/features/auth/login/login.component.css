@@ -69,3 +69,14 @@
   margin:30px;
   font-size: 35px;
 }
+
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  width: 80%;
+  text-align: left;
+}
+
+input.ng-invalid.ng-touched {
+  border: 1px solid #e74c3c;
+}

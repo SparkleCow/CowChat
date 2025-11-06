@@ -1,17 +1,25 @@
 <section class="register-container">
-  <form [formGroup]="form" class="register-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
     <h1>CowChat</h1>
     <h2>Iniciar sesión</h2>
     <p>Completa el formulario para iniciar</p>
+
     <div class="form-content">
       <input formControlName="username" type="text" id="username" placeholder="Nombre de usuario"/>
+      <div class="error" *ngIf="isInvalid('username')">
+        El nombre de usuario es obligatorio.
+      </div>
 
       <input formControlName="password" type="password" id="password" placeholder="Contraseña"/>
+      <div class="error" *ngIf="isInvalid('password')">
+        La contraseña es obligatoria y debe tener al menos 6 caracteres.
+      </div>
     </div>
 
-    <button (click)="onSubmit()" class="submit-botton">Login</button>
+    <button type="submit" class="submit-botton" [disabled]="form.invalid">Login</button>
 
-    <p>¿No tienes cuenta aún? <a>Registrate aqui</a></p>
+    <div class="error" *ngIf="serverError">{{ serverError }}</div>
+
+    <p>¿No tienes cuenta aún? <a routerLink="/register">Regístrate aquí</a></p>
   </form>
-
 </section>

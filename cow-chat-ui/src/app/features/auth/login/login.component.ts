@@ -16,6 +16,7 @@ import { UserService } from '../../../core/services/user.service';
 export class LoginComponent implements OnInit{
 
   form!: FormGroup;
+  serverError: string | null = null;
 
   constructor(private authService: AuthService,
               private userService: UserService,
@@ -30,26 +31,38 @@ export class LoginComponent implements OnInit{
     });
   }
 
-  onSubmit() {
+
+  onSubmit(): void {
+    this.serverError = null;
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-     this.authService.$login(this.form.value).subscribe({
+    this.authService.$login(this.form.value).subscribe({
       next: (response: AuthResponseDto) => {
         this.authService.saveToken(response.jwt);
-        this.authService.saveUserId(response.userId)
+        this.authService.saveUserId(response.userId);
         this.userService.findUserLogged();
-        alert("Logueado con éxito");
-        this.redirectAtChat();
+        this.router.navigate(['/chat']);
       },
-      error: (err) => console.error('Error al loguear cuenta:', err)
+      error: (err) => {
+        console.error('Error al ingresar en la cuenta:', err);
+        this.serverError = err.error?.businessErrorDescription
+          || err.error?.message
+          || 'Error desconocido. Inténtalo de nuevo.';
+      }
     });
   }
 
   redirectAtChat(){
     this.router.navigate(["/chat"]);
+  }
+
+  isInvalid(controlName: string): boolean {
+    const control = this.form.get(controlName);
+    return !!control && control.invalid && control.touched;
   }
 
 }

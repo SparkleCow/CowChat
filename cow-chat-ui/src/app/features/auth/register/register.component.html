@@ -1,22 +1,35 @@
 <section class="register-container">
-  <form [formGroup]="form" class="register-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
     <h1>CowChat</h1>
     <h2>Crear cuenta</h2>
-    <p>Completa el formulario para iniciar</p>
+    <p>Completa el formulario para registrarte</p>
+
     <div class="form-content">
-      <input formControlName="username" type="text" id="username" placeholder="Nombre de usuario"/>
+      <input formControlName="username" type="text" placeholder="Nombre de usuario" />
+      <div class="error" *ngIf="isInvalid('username')">
+        El nombre de usuario es obligatorio (máx. 20 caracteres).
+      </div>
 
-      <input formControlName="email" type="email" id="email" placeholder="Correo"/>
+      <input formControlName="email" type="email" placeholder="Correo" />
+      <div class="error" *ngIf="isInvalid('email')">
+        Ingresa un correo válido.
+      </div>
 
-      <input formControlName="password" type="password" id="password" placeholder="Contraseña"/>
+      <input formControlName="password" type="password" placeholder="Contraseña" />
+      <div class="error" *ngIf="isInvalid('password')">
+        La contraseña debe tener entre 8 y 20 caracteres.
+      </div>
 
-      <input formControlName="confirmPassword" type="password" id="confirm-password" placeholder="Confirmar contraseña"/>
-
+      <input formControlName="confirmPassword" type="password" placeholder="Confirmar contraseña" />
+      <div class="error" *ngIf="form.errors?.['passwordsMismatch'] && (form.touched || form.dirty)">
+        Las contraseñas no coinciden.
+      </div>
     </div>
 
-    <button (click)="onSubmit()" class="submit-botton">Registrarse</button>
+    <button type="submit" class="submit-botton">Registrarse</button>
 
-    <p>¿Ya tienes cuenta? <a>Inicia sesión</a></p>
+    <p class="error" *ngIf="serverError">{{ serverError }}</p>
+
+    <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
   </form>
-
 </section>

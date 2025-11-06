@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { UserResponseDto } from '../../models/user-response-dto';
 import { AuthResponseDto } from '../../models/auth-response-dto';
 
@@ -37,11 +38,15 @@ export class UserService {
 
     this.http.get<UserResponseDto[]>(`${this.url}/user`)
       .pipe(
-        tap(users => this.usersSubject.next(users))
+        tap(users => this.usersSubject.next(users)),
+        catchError(err => {
+          const errorMsg = err?.error?.businessErrorDescription || 'Error loading users.';
+          console.error('Error loading users:', errorMsg);
+          alert(errorMsg);
+          return throwError(() => err);
+        })
       )
-      .subscribe({
-        error: (err) => console.error('Error al cargar usuarios:', err)
-      });
+      .subscribe();
   }
 
   updateUserPresence(userId: string, online: boolean): void {
@@ -66,25 +71,45 @@ export class UserService {
   }
 
   findUserLogged(): void {
-    this.http.get<UserResponseDto>(`${this.url}/user/self`).subscribe({
-      next: (user) => {this.userSubject.next(user)
-      },
-      error: (err) => {
-        console.error('Error al obtener usuario logueado:', err);
-        this.userSubject.next(null);
-      }
-    });
+    this.http.get<UserResponseDto>(`${this.url}/user/self`)
+      .pipe(
+        tap(user => this.userSubject.next(user)),
+        catchError(err => {
+          const errorMsg = err?.error?.businessErrorDescription || 'Error retrieving logged user.';
+          console.error('Error retrieving logged user:', errorMsg);
+          this.userSubject.next(null);
+          return throwError(() => err);
+        })
+      )
+      .subscribe();
   }
 
   uploadUserImage(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file);
-    return this.http.post(`${this.url}/user/upload`, formData, { responseType: 'text' });
+
+    return this.http.post(`${this.url}/user/upload`, formData, { responseType: 'text' })
+      .pipe(
+        catchError(err => {
+          const errorMsg = err?.error?.businessErrorDescription || 'Error uploading image.';
+          console.error('Error uploading image:', errorMsg);
+          alert(errorMsg);
+          return throwError(() => err);
+        })
+      );
   }
 
   updateUsername(newUsername: string): Observable<AuthResponseDto> {
-    return this.http.put<AuthResponseDto>(`${this.url}/user/update`, { username: newUsername });
+    return this.http.put<AuthResponseDto>(`${this.url}/user/update`, { username: newUsername })
+      .pipe(
+        catchError(err => {
+          const errorMsg = err?.error?.businessErrorDescription || 'Error updating username.';
+          console.error('Error updating username:', errorMsg);
+          alert(errorMsg);
+          return throwError(() => err);
+        })
+      );
   }
 
   /**
