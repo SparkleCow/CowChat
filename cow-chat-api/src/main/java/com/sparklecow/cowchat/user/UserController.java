@@ -29,6 +29,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserLogged(authentication));
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<UserResponseDto>> findAllUsersContaining(@RequestParam("username") String username){
+        return ResponseEntity.ok(userService.findUsersContaining(username));
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam String key,
                                              @RequestPart MultipartFile file,

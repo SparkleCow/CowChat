@@ -8,6 +8,7 @@ public enum BusinessErrorCodes {
 
     NO_CODE(0, HttpStatus.NOT_IMPLEMENTED, "No code"),
     USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Email / password is incorrect"),
+    CHAT_NOT_FOUND(404, HttpStatus.NOT_FOUND, "Chat not found"),
     BAD_CREDENTIALS(400, HttpStatus.UNAUTHORIZED, "Email / password is incorrect"),
     ACCOUNT_LOCKED(423, HttpStatus.LOCKED, "User account is locked"),
     ACCOUNT_DISABLED(403, HttpStatus.FORBIDDEN, "User account is disabled"),

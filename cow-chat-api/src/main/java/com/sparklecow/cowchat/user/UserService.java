@@ -61,4 +61,11 @@ public class UserService {
         String token  = jwtUtils.generateToken(user);
         return new AuthResponseDto(token, user.getId());
     }
+
+    public List<UserResponseDto> findUsersContaining(String username){
+        if (username == null || username.isBlank()) {
+            return userRepository.findAll().stream().map(userMapper::toUserResponseDto).toList();
+        }
+        return userRepository.findByUsernameContainingIgnoreCase(username).stream().map(userMapper::toUserResponseDto).toList();
+    }
 }

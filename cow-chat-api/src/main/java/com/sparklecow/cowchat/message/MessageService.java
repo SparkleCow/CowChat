@@ -2,9 +2,12 @@ package com.sparklecow.cowchat.message;
 
 import com.sparklecow.cowchat.chat.Chat;
 import com.sparklecow.cowchat.chat.ChatRepository;
+import com.sparklecow.cowchat.exception.ChatNotFoundException;
+import com.sparklecow.cowchat.exception.UserNotFoundException;
 import com.sparklecow.cowchat.user.User;
 import com.sparklecow.cowchat.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,9 +25,9 @@ public class MessageService {
     public MessageResponseDto sendMessage(MessageRequestDto messageRequestDto) {
 
         Chat chat = chatRepository.findById(messageRequestDto.chatId())
-                .orElseThrow(() -> new RuntimeException("Chat not found"));
+                .orElseThrow(() -> new ChatNotFoundException("Chat not found"));
         User sender = userRepository.findById(messageRequestDto.senderId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Message message = new Message();
         message.setChat(chat);

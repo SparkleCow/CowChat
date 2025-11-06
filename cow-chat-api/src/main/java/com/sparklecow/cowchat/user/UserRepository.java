@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(name = "User.findAllExcept")
     List<User> findAllExcept(@Param("userId") String userId);
+
+    List<User> findByUsernameContainingIgnoreCase(String username);
 }

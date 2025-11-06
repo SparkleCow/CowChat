@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> createUser(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserRequestDto userRequestDto){
         User user = authService.createUser(userRequestDto);
         URI uri = URI.create("/users/" + user.getId());
         return ResponseEntity.created(uri).build();

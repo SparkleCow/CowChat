@@ -1,6 +1,7 @@
 package com.sparklecow.cowchat.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,6 +64,16 @@ public class ControllerAdvice {
                         .build());
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(BusinessErrorCodes.USER_NOT_FOUND.getHttpStatus())
+                .body(ExceptionResponse.builder()
+                        .businessErrorCode(BusinessErrorCodes.USER_NOT_FOUND.getErrorCode())
+                        .businessErrorDescription(BusinessErrorCodes.USER_NOT_FOUND.getMessage())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         return ResponseEntity.status(BusinessErrorCodes.USER_NOT_FOUND.getHttpStatus())
@@ -70,6 +81,26 @@ public class ControllerAdvice {
                         .businessErrorCode(BusinessErrorCodes.USER_NOT_FOUND.getErrorCode())
                         .businessErrorDescription(BusinessErrorCodes.USER_NOT_FOUND.getMessage())
                         .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthExceptions(BadCredentialsException ex) {
+        return ResponseEntity.status(BAD_CREDENTIALS.getHttpStatus())
+                .body(ExceptionResponse.builder()
+                        .message(ex.getMessage())
+                        .businessErrorCode(BAD_CREDENTIALS.getErrorCode())
+                        .businessErrorDescription(BAD_CREDENTIALS.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(ChatNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthExceptions(ChatNotFoundException ex) {
+        return ResponseEntity.status(CHAT_NOT_FOUND.getHttpStatus())
+                .body(ExceptionResponse.builder()
+                        .message(ex.getMessage())
+                        .businessErrorCode(CHAT_NOT_FOUND.getErrorCode())
+                        .businessErrorDescription(CHAT_NOT_FOUND.getMessage())
                         .build());
     }
 }
