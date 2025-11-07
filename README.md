@@ -68,3 +68,7 @@ Users can register, authenticate (via JWT), send real-time messages, and manage 
 - Optimized performance using reactive programming  
 
 ---
+
+<img width="1064" height="902" alt="image" src="https://github.com/user-attachments/assets/6ee3ff13-a0a5-4086-a595-799ada26960f" />
+<img width="1643" height="420" alt="image" src="https://github.com/user-attachments/assets/aa32de96-4708-49d1-809a-3e40a29c37d7" />
+
