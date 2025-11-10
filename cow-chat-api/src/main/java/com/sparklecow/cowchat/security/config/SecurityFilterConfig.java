@@ -2,6 +2,7 @@ package com.sparklecow.cowchat.security.config;
 
 import com.sparklecow.cowchat.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,6 +19,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityFilterConfig{
 
+    @Value("${application.cors.allowed-origins}")
+    private String allowedOrigins;
     private final JwtFilter jwtFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -40,10 +43,9 @@ public class SecurityFilterConfig{
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOriginPattern(allowedOrigins);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

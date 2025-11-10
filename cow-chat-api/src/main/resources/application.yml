@@ -29,6 +29,8 @@ application:
     jwt:
       secret_key: ${SECRET_KEY}
       expiration: 8640000
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:*}
 
 aws:
   s3:
