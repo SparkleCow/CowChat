@@ -3,7 +3,10 @@
 CowChat is a real-time chat application built with **Spring** and **Angular**, designed to provide a modern, responsive, and secure messaging experience.  
 It combines **websocket-based communication**, **JWT authentication**, and **RESTful APIs** to create a fast, scalable, and user-friendly chat platform.
 
-Users can register, authenticate (via JWT), send real-time messages, and manage conversations dynamically, all within an interface optimized for desktop and mobile.
+Users can register, authenticate through JWT, send real-time messages, and manage conversations dynamically, all within an interface optimized for desktop and mobile.
+
+<img width="1538" height="947" alt="Captura de pantalla 2025-10-03 182725" src="https://github.com/user-attachments/assets/ddeca13b-61ec-4437-9d30-087b5ecabe77" />
+<img width="1543" height="953" alt="Captura de pantalla 2025-10-03 182733" src="https://github.com/user-attachments/assets/16a60e73-9fde-4022-9b93-129dcf3fa6b5" />
 
 ---
 
@@ -42,12 +45,17 @@ Users can register, authenticate (via JWT), send real-time messages, and manage 
 - **RxJS** → Reactive event handling  
 - **WebSocket Client** → Real-time connection to the backend  
 
+<img width="1871" height="1002" alt="Captura de pantalla 2025-11-04 204308" src="https://github.com/user-attachments/assets/405996f3-74ea-41ac-ab56-4cb41561e111" />
+
 ---
 
 ## 💡 Key Features
 
 ### Authentication & Authorization
-- JWT authentication with refresh token rotation  
+- JWT authentication with refresh token rotation
+
+<img width="1535" height="940" alt="Captura de pantalla 2025-10-03 182759" src="https://github.com/user-attachments/assets/7c5f982e-ec9c-448a-8a52-a6a6a4082743" />
+<img width="1522" height="940" alt="Captura de pantalla 2025-10-03 182750" src="https://github.com/user-attachments/assets/c35a3e54-c93f-455b-b6aa-211b14406e1a" />
 
 ### Real-Time Chat System
 - WebSocket integration for low-latency messaging  
@@ -69,6 +77,23 @@ Users can register, authenticate (via JWT), send real-time messages, and manage 
 
 ---
 
+## Architecture
+
 <img width="1064" height="902" alt="image" src="https://github.com/user-attachments/assets/6ee3ff13-a0a5-4086-a595-799ada26960f" />
-<img width="1643" height="420" alt="image" src="https://github.com/user-attachments/assets/aa32de96-4708-49d1-809a-3e40a29c37d7" />
+
+## Messaging system
+
+Built to feel lightweight, fast and responsive across desktop and mobile devices.
+<table>
+  <tr>
+    <td>
+      <img width="408" alt="CowChat mobile conversation"
+      src="https://github.com/user-attachments/assets/7f7760d6-3196-4f77-854b-c4dd3b1d6cb9" />
+    </td>
+    <td>
+      <img width="474" alt="CowChat mobile UI"
+      src="https://github.com/user-attachments/assets/8f3edbf6-1b2c-4596-9594-da1673d587b7" />
+    </td>
+  </tr>
+</table>
 
